@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import styled from "styled-components";
+import SongDetail from "./components/SongDetail";
+import ProgressArea, { AudioRefHandle } from "./components/ProgressArea";
+import Controls from "./components/Controls";
+import Playlist from "./components/Playlist";
+import palette from "./styles/palette";
 
-function App() {
+const Container = styled.div`
+  width: 500px;
+  padding: 25px 30px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 15px;
+  border: 2px solid black;
+  background: ${palette.white};
+`;
+
+const App: React.FC = () => {
+  // AudioRefHandle: play, pause, changeVolume
+  const ref = React.createRef<AudioRefHandle>();
+
+  const onPlay = () => {
+    ref.current!.play();
+  };
+
+  const onPause = () => {
+    ref.current!.pause();
+  };
+
+  const onChangeVolume = (volume: any) => {
+    // 실제로 볼륨을 조절하는 요소
+    ref.current!.changeVolume(volume);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <SongDetail />
+      <ProgressArea ref={ref} />
+      <Controls play={onPlay} pause={onPause} changeVolume={onChangeVolume} />
+      <Playlist />
+    </Container>
   );
-}
+};
 
 export default App;

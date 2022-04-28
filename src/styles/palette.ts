@@ -1,0 +1,8 @@
+const palette = {
+  blue: "#0077ff",
+  green: "#20b373",
+  white: "#ffffff",
+  lightbshadow: "rgba(0, 0, 0, 0.15)",
+};
+
+export default palette;
