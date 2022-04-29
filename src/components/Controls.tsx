@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import RepeatIcon from "@mui/icons-material/Repeat";
@@ -67,25 +67,26 @@ interface RepeatButtonProps {
   onClick: () => void;
 }
 
-const RepeatButton: React.FC<RepeatButtonProps> = ({
-  repeatType,
-  ...props
-}) => {
-  switch (repeatType) {
-    case "ALL":
-      return <RepeatIcon sx={{ fontSize: 30, cursor: "pointer" }} {...props} />;
-    case "ONE":
-      return (
-        <RepeatOneIcon sx={{ fontSize: 30, cursor: "pointer" }} {...props} />
-      );
-    case "SHUFFLE":
-      return (
-        <ShuffleIcon sx={{ fontSize: 30, cursor: "pointer" }} {...props} />
-      );
-    default:
-      return null;
+const RepeatButton: React.FC<RepeatButtonProps> = React.memo(
+  ({ repeatType, ...props }) => {
+    switch (repeatType) {
+      case "ALL":
+        return (
+          <RepeatIcon sx={{ fontSize: 30, cursor: "pointer" }} {...props} />
+        );
+      case "ONE":
+        return (
+          <RepeatOneIcon sx={{ fontSize: 30, cursor: "pointer" }} {...props} />
+        );
+      case "SHUFFLE":
+        return (
+          <ShuffleIcon sx={{ fontSize: 30, cursor: "pointer" }} {...props} />
+        );
+      default:
+        return null;
+    }
   }
-};
+);
 
 const Controls: React.FC<ControlsProps> = ({
   setShowPlaylist,
@@ -97,33 +98,36 @@ const Controls: React.FC<ControlsProps> = ({
 
   const { isPlaying, repeatType } = useSelector((state) => state.musicPlayer);
 
-  const onClickPlay = () => {
+  const onClickPlay = useCallback(() => {
     play();
-  };
+  }, [play]);
 
-  const onClickPause = () => {
+  const onClickPause = useCallback(() => {
     pause();
-  };
+  }, [pause]);
 
-  const onChangeVolume = (event: React.ChangeEvent<HTMLInputElement>) => {
-    changeVolume(event.target.value);
-  };
+  const onChangeVolume = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      changeVolume(event.target.value);
+    },
+    [changeVolume]
+  );
 
-  const onClickPrev = () => {
+  const onClickPrev = useCallback(() => {
     dispatch(prevMusic());
-  };
+  }, [dispatch]);
 
-  const onClickNext = () => {
+  const onClickNext = useCallback(() => {
     dispatch(nextMusic());
-  };
+  }, [dispatch]);
 
-  const onClickRepeat = () => {
+  const onClickRepeat = useCallback(() => {
     dispatch(toggleRepeatType());
-  };
+  }, [dispatch]);
 
-  const onClickShowPlaylist = () => {
+  const onClickShowPlaylist = useCallback(() => {
     setShowPlaylist(true);
-  };
+  }, [setShowPlaylist]);
 
   return (
     <Container>
@@ -170,4 +174,4 @@ const Controls: React.FC<ControlsProps> = ({
   );
 };
 
-export default Controls;
+export default React.memo(Controls);

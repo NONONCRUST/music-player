@@ -1,20 +1,12 @@
 import React, { useCallback, useState } from "react";
-import styled from "styled-components";
 import SortableListItems from "./SortableListItems";
-
-const Container = styled.div`
-  ul,
-  li {
-    list-style-type: none;
-  }
-`;
 
 interface Props {
   data: object[];
   onDropItem: (newListData: object[]) => void;
   onClickItem: (index: number) => void;
   renderItem: (
-    item: { name: string; artist: string },
+    item: { name: string; artist: string; src: string },
     index: number
   ) => JSX.Element;
 }
@@ -56,28 +48,20 @@ const SortableList: React.FC<Props> = ({
   );
 
   return (
-    <Container>
-      <ul>
-        {listData.map((item: any, index: number) => (
-          <SortableListItems
-            key={index}
-            index={index}
-            draggable={true}
-            onDragStart={onDragStart}
-            onDropItem={onDrop}
-            onClickItem={onClickItem}
-          >
-            {renderItem(item, index)}
-          </SortableListItems>
-        ))}
+    <ul>
+      {listData.map((item: any, index: number) => (
         <SortableListItems
-          key={listData.length}
-          index={listData.length}
-          draggable={false}
+          key={index}
+          index={index}
+          draggable={true}
+          onDragStart={onDragStart}
           onDropItem={onDrop}
-        />
-      </ul>
-    </Container>
+          onClickItem={onClickItem}
+        >
+          {renderItem(item, index)}
+        </SortableListItems>
+      ))}
+    </ul>
   );
 };
 

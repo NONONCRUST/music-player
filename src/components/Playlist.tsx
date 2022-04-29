@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import QueueMusic from "@mui/icons-material/QueueMusic";
 import Close from "@mui/icons-material/Close";
@@ -6,7 +6,10 @@ import PlaylistItem from "./PlaylistItem";
 import palette from "../styles/palette";
 import { useDispatch, useSelector } from "../store";
 import SortableList from "./SortableList";
-import { setCurrentIndexAndId } from "../store/musicPlayerSlice";
+import {
+  setCurrentIndexAndId,
+  updatePlaylist,
+} from "../store/musicPlayerSlice";
 
 const Container = styled.div`
   .play-list {
@@ -74,11 +77,6 @@ const Container = styled.div`
         .music-duration {
           font-size: 16px;
         }
-
-        .row.playing,
-        .music-duration.playing {
-          color: ${palette.green};
-        }
       }
     }
   }
@@ -93,20 +91,30 @@ const Playlist: React.FC<Props> = ({ setShowPlaylist }) => {
 
   const dispatch = useDispatch();
 
-  const onClickCloseIcon = () => {
+  const onClickCloseIcon = useCallback(() => {
     setShowPlaylist(false);
-  };
+  }, [setShowPlaylist]);
 
-  const onClickItem = (index: number) => {
-    dispatch(setCurrentIndexAndId(index));
-  };
+  const onClickItem = useCallback(
+    (index: number) => {
+      dispatch(setCurrentIndexAndId(index));
+    },
+    [dispatch]
+  );
 
-  const onDropItem = () => {};
+  const onDropItem = useCallback(
+    (newPlaylist: any) => {
+      dispatch(updatePlaylist(newPlaylist));
+    },
+    [dispatch]
+  );
 
-  const renderItem = (
-    item: { name: string; artist: string },
-    index: number
-  ) => <PlaylistItem item={item} index={index} />;
+  const renderItem = useCallback(
+    (item: { name: string; artist: string; src: string }, index: number) => (
+      <PlaylistItem item={item} index={index} />
+    ),
+    []
+  );
 
   return (
     <Container>
@@ -132,4 +140,4 @@ const Playlist: React.FC<Props> = ({ setShowPlaylist }) => {
   );
 };
 
-export default Playlist;
+export default React.memo(Playlist);

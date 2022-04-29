@@ -65,4 +65,4 @@ const SongDetail: React.FC = () => {
   );
 };
 
-export default SongDetail;
+export default React.memo(SongDetail);

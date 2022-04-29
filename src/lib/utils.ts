@@ -7,3 +7,16 @@ export const getRandomNum = (arr: number[], excludeNum: number): any => {
     ? getRandomNum(arr, excludeNum)
     : arr[randomNum];
 };
+
+// 오디오 src를 인자로 받아서 음악의 길이를 리턴함
+export const getDuration = (src: string) => {
+  return new Promise((resolve) => {
+    const audio = new Audio();
+    audio.onloadedmetadata = () => {
+      const minute = `0${parseInt(String(audio.duration / 60), 10)}`;
+      const second = `0${parseInt(String(audio.duration % 60))}`;
+      resolve(`${minute}:${second.slice(-2)}`);
+    };
+    audio.src = src;
+  });
+};

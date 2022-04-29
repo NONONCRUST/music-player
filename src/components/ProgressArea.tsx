@@ -74,13 +74,13 @@ const ProgressArea = React.forwardRef<AudioRefHandle>((_, ref) => {
     },
   }));
 
-  const onPlay = () => {
+  const onPlay = useCallback(() => {
     dispatch(playMusic());
-  };
+  }, [dispatch]);
 
-  const onPause = () => {
+  const onPause = useCallback(() => {
     dispatch(stopMusic());
-  };
+  }, [dispatch]);
 
   // 노래가 끝났을 때
   const onEnded = useCallback(() => {
@@ -94,32 +94,38 @@ const ProgressArea = React.forwardRef<AudioRefHandle>((_, ref) => {
   }, [repeatType, dispatch]);
 
   // 소수점인 시간을 00:00 과 같은 형태로 바꿔줌
-  const formatTime = (time: number) => {
+  const formatTime = useCallback((time: number) => {
     const minute = `0${parseInt(String(time / 60), 10)}`;
     const second = `0${parseInt(String(time % 60))}`;
     return `${minute}:${second.slice(-2)}`;
-  };
+  }, []);
 
-  const onMouseDownProgressBar = (event: React.MouseEvent<HTMLDivElement>) => {
-    const progressBarWidth = event.currentTarget.clientWidth;
-    const offsetX = event.nativeEvent.offsetX;
-    const duration = audioRef.current!.duration;
-    // currentTime만 업데이트해주면 progressBar 위치도 자동으로 업데이트됨
-    audioRef.current!.currentTime = (offsetX / progressBarWidth) * duration;
-  };
+  const onMouseDownProgressBar = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const progressBarWidth = event.currentTarget.clientWidth;
+      const offsetX = event.nativeEvent.offsetX;
+      const duration = audioRef.current!.duration;
+      // currentTime만 업데이트해주면 progressBar 위치도 자동으로 업데이트됨
+      audioRef.current!.currentTime = (offsetX / progressBarWidth) * duration;
+    },
+    []
+  );
 
   // audio의 onTimeUpdate 속성
-  const onTimeUpdate = (event: React.ChangeEvent<HTMLAudioElement>) => {
-    if (event.target.readyState === 0) return;
-    const currentTime = event.target.currentTime;
-    const duration = event.target.duration;
-    const progressBarWidth = (currentTime / duration) * 100;
+  const onTimeUpdate = useCallback(
+    (event: React.ChangeEvent<HTMLAudioElement>) => {
+      if (event.target.readyState === 0) return;
+      const currentTime = event.target.currentTime;
+      const duration = event.target.duration;
+      const progressBarWidth = (currentTime / duration) * 100;
 
-    progressBarRef.current!.style.width = `${progressBarWidth}%`;
+      progressBarRef.current!.style.width = `${progressBarWidth}%`;
 
-    setCurrentTime(formatTime(currentTime));
-    setDuration(formatTime(duration));
-  };
+      setCurrentTime(formatTime(currentTime));
+      setDuration(formatTime(duration));
+    },
+    [formatTime]
+  );
 
   return (
     <Container>
@@ -144,4 +150,4 @@ const ProgressArea = React.forwardRef<AudioRefHandle>((_, ref) => {
   );
 });
 
-export default ProgressArea;
+export default React.memo(ProgressArea);
