@@ -84,6 +84,7 @@ const ProgressArea = React.forwardRef<AudioRefHandle>((_, ref) => {
 
   // 노래가 끝났을 때
   const onEnded = useCallback(() => {
+    // 한곡 반복이면 다시 재생
     if (repeatType === "ONE") {
       audioRef.current!.currentTime = 0;
       audioRef.current!.play();

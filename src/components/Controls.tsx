@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import RepeatIcon from "@mui/icons-material/Repeat";
@@ -56,8 +56,7 @@ const Container = styled.div`
 `;
 
 interface ControlsProps {
-  showMusicList?: any;
-  setShowMusicList?: any;
+  setShowPlaylist: (showPlaylist: boolean) => void;
   play: () => void;
   pause: () => void;
   changeVolume: (volume: any) => void;
@@ -89,8 +88,7 @@ const RepeatButton: React.FC<RepeatButtonProps> = ({
 };
 
 const Controls: React.FC<ControlsProps> = ({
-  showMusicList,
-  setShowMusicList,
+  setShowPlaylist,
   play,
   pause,
   changeVolume,
@@ -123,10 +121,17 @@ const Controls: React.FC<ControlsProps> = ({
     dispatch(toggleRepeatType());
   };
 
+  const onClickShowPlaylist = () => {
+    setShowPlaylist(true);
+  };
+
   return (
     <Container>
       <div className="control-area">
-        <QueueMusicIcon sx={{ fontSize: 30, cursor: "pointer" }} />
+        <QueueMusicIcon
+          sx={{ fontSize: 30, cursor: "pointer" }}
+          onClick={onClickShowPlaylist}
+        />
         <RepeatButton repeatType={repeatType} onClick={onClickRepeat} />
 
         <SkipPreviousIcon

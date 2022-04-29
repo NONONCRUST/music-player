@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import SongDetail from "./components/SongDetail";
 import ProgressArea, { AudioRefHandle } from "./components/ProgressArea";
@@ -17,6 +17,8 @@ const Container = styled.div`
 `;
 
 const App: React.FC = () => {
+  const [showPlaylist, setShowPlaylist] = useState(false);
+
   // AudioRefHandle: play, pause, changeVolume
   const ref = React.createRef<AudioRefHandle>();
 
@@ -28,6 +30,7 @@ const App: React.FC = () => {
     ref.current!.pause();
   };
 
+  // volume 타입 지정 해야함
   const onChangeVolume = (volume: any) => {
     // 실제로 음악 볼륨을 조절하는 속성
     ref.current!.changeVolume(volume);
@@ -37,8 +40,13 @@ const App: React.FC = () => {
     <Container>
       <SongDetail />
       <ProgressArea ref={ref} />
-      <Controls play={onPlay} pause={onPause} changeVolume={onChangeVolume} />
-      <Playlist />
+      <Controls
+        play={onPlay}
+        pause={onPause}
+        changeVolume={onChangeVolume}
+        setShowPlaylist={setShowPlaylist}
+      />
+      {showPlaylist && <Playlist setShowPlaylist={setShowPlaylist} />}
     </Container>
   );
 };
