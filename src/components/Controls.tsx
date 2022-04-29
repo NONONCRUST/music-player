@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import RepeatIcon from "@mui/icons-material/Repeat";
@@ -58,7 +58,6 @@ const Container = styled.div`
 interface ControlsProps {
   showMusicList?: any;
   setShowMusicList?: any;
-  resetDuration?: any;
   play: () => void;
   pause: () => void;
   changeVolume: (volume: any) => void;
@@ -92,7 +91,6 @@ const RepeatButton: React.FC<RepeatButtonProps> = ({
 const Controls: React.FC<ControlsProps> = ({
   showMusicList,
   setShowMusicList,
-  resetDuration,
   play,
   pause,
   changeVolume,

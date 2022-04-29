@@ -29,7 +29,7 @@ const App: React.FC = () => {
   };
 
   const onChangeVolume = (volume: any) => {
-    // 실제로 볼륨을 조절하는 요소
+    // 실제로 음악 볼륨을 조절하는 속성
     ref.current!.changeVolume(volume);
   };
 

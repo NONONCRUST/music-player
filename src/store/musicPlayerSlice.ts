@@ -65,7 +65,7 @@ export const musicPlayerSlice = createSlice({
     },
     toggleRepeatType(state, action: PayloadAction) {
       const repeatType = ["ALL", "ONE", "SHUFFLE"];
-      // % 3: 배열을 순환하도록 함
+      // 배열을 순환하도록 함
       state.repeatType =
         repeatType[(repeatType.indexOf(state.repeatType) + 1) % 3];
       return state;

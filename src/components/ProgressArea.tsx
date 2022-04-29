@@ -1,4 +1,9 @@
-import React, { useRef, useImperativeHandle, useState } from "react";
+import React, {
+  useRef,
+  useImperativeHandle,
+  useState,
+  useCallback,
+} from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "../store";
 import { nextMusic, playMusic, stopMusic } from "../store/musicPlayerSlice";
@@ -36,6 +41,7 @@ export type AudioRefHandle = {
   play: () => void;
   pause: () => void;
   changeVolume: (volume: any) => void;
+  resetDuration: () => void;
 };
 
 // forwardRef를 사용하는 컴포넌트는 React.FC 생략 (타입스크립트)
@@ -45,7 +51,9 @@ const ProgressArea = React.forwardRef<AudioRefHandle>((_, ref) => {
 
   const dispatch = useDispatch();
 
-  const { playlist, currentIndex } = useSelector((state) => state.musicPlayer);
+  const { playlist, currentIndex, repeatType } = useSelector(
+    (state) => state.musicPlayer
+  );
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -61,6 +69,9 @@ const ProgressArea = React.forwardRef<AudioRefHandle>((_, ref) => {
     changeVolume: (volume: any) => {
       audioRef.current!.volume = volume;
     },
+    resetDuration: () => {
+      audioRef.current!.currentTime = 0;
+    },
   }));
 
   const onPlay = () => {
@@ -72,9 +83,14 @@ const ProgressArea = React.forwardRef<AudioRefHandle>((_, ref) => {
   };
 
   // 노래가 끝났을 때
-  const onEnded = () => {
-    dispatch(nextMusic());
-  };
+  const onEnded = useCallback(() => {
+    if (repeatType === "ONE") {
+      audioRef.current!.currentTime = 0;
+      audioRef.current!.play();
+    } else {
+      dispatch(nextMusic());
+    }
+  }, [repeatType, dispatch]);
 
   // 소수점인 시간을 00:00 과 같은 형태로 바꿔줌
   const formatTime = (time: number) => {
